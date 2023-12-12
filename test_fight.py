@@ -2,21 +2,21 @@ from dnd import *
 import time
 from char_info import char_info
 
-RAT_AC = 12
-RAT_HP = 7
-SPEED = 30
+RAT_AC = 10
+RAT_HP = 2
+SPEED = 20
 
-strength = 7
-str_mod = -2
+strength = 2
+str_mod = -4
 
-dexterity = 15
-dex_mod = 2
+dexterity = 11
+dex_mod = 0
 
-constitution = 11
-con_mod = 0
+constitution = 9
+con_mod = -1
 
 intelligence = 2
-int_mod = -2
+int_mod = -4
 
 wisdom = 10
 wis_mod = 0
@@ -35,16 +35,15 @@ character_traits = {"strength": [strength, str_mod],
 # Advantage if another rat within 5 feet
 
 # ATTACKS
-HIT = roll(20) + 4
-BITE = roll(4)+2
+HIT = roll(20)
+BITE = 1
 
 HUMAN_AC = char_info[1]["AC"]
-print(HUMAN_AC)
 HUMAN_HP = char_info[1]["HP"]
 print("...")
 time.sleep(2)
 
-while RAT_HP and HUMAN_HP > 0:
+while RAT_HP > 0 and HUMAN_HP > 0:
 
 
     if HIT <= HUMAN_AC:
@@ -52,7 +51,7 @@ while RAT_HP and HUMAN_HP > 0:
     else:
         DAMAGE = BITE
 
-    print("The GIANT RAT is trying to attack!")
+    print("The RAT is trying to attack!")
     print("...")
     time.sleep(2)
 
@@ -61,13 +60,15 @@ while RAT_HP and HUMAN_HP > 0:
         print("Miss!")
     else:
         print(f"Hit for {DAMAGE} HP! Health is now at {HUMAN_HP}")
-
+    if HUMAN_HP <= 0:
+        break
     print("...")
     time.sleep(2)
     
     print("What would you like to do?")
 
     print("[0] shortsword")
+    print("[1] exit combat \n WARNING: Data will not be saved")
 
     answer = input("Type a number: ")
 
@@ -77,9 +78,12 @@ while RAT_HP and HUMAN_HP > 0:
             DAMAGE = 0
         else:
             DAMAGE = roll(6)
+    else:
+        print("Exiting combat. Data will not be saved.")
+        exit()
 
     RAT_HP -= DAMAGE
-
+    print(RAT_HP)
 
     print("...")
     time.sleep(2)
@@ -97,4 +101,19 @@ if HUMAN_HP <= 0:
 else:
     print("You slayed the GIANT RAT! Gain 10XP")
 
-## NEED TO CHANGE HP IN CHAR_INFO DOCUMENT
+
+char_info[1]["HP"] = HUMAN_HP
+
+def replace_line(filename, line_number, text):
+    with open(filename) as file:
+        lines = file.readlines()
+    lines[line_number] = text + "\n"
+    with open(filename, "w") as file:
+        for line in lines:
+            file.write(line)
+
+filename = "char_info.py"
+line_number = 0
+text = str(char_info)
+replace_line(filename, line_number, text)
+
